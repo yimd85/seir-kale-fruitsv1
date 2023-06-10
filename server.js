@@ -10,6 +10,7 @@ const app = express() // express application
 // MIDDLEWARE (Functions that run between the request and response)
 app.use(morgan("dev")) // SETS UP OUT LOGGING MIDDLEWARE
 app.use(express.static("public")) // treat the public folder as a static file server
+app.use(express.urlencoded({extended: false})) // middleware for parsing urlencoded
 
 
 // ROUTES
@@ -19,6 +20,31 @@ app.get("/fruit", (req, res) => {
   // render an ejs template with all the fruits
   res.render("index.ejs", {fruits})
 })
+
+// NEW - GET - SHOW A FORM TO CREATE A FRUIT
+app.get("/fruit/new", (req, res) => {
+  // render the new template
+  res.render("new.ejs")
+})
+
+// DESTROY - DELETE - DELETE A FRUIT
+
+// UPDATE - PUT - UPDATE A FRUIT
+
+// CREATE - POST - CREATE A FRUIT
+app.post("/fruit", (req, res) => {
+  //  turn the ready to eat property into a BOOLEAN
+  // EXPRESSION ? TRUE : FALSE
+  req.body.readyToEat = req.body.readyToEat === "on" ? true : false
+  // PUSH THE NEW FRUIT INTO THE ARRAY
+  fruits.push(req.body)
+  // SEND USER BACK TO THE INDEX PAGE
+  res.redirect("/fruit") // get => /fruit
+})
+
+
+// EDIT - GET - RENDER FORM TO UPDATE A FRUIT
+
 
 // SHOW - GET - SHOWS ONE FRUIT - /fruit/:id
 app.get("/fruit/:id", (req, res) => {

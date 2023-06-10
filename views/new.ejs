@@ -9,16 +9,14 @@
 </head>
 <body>
     <h1>The Fruits App</h1>
-
-    <a href="/fruit/new"><button>Create New Fruit</button></a>
     
-    <ul>
-        <% for(let i = 0; i < fruits.length; i++){ %>
-
-            <li><a href="/fruit/<%= i %>"><%= fruits[i].name %></a></li>
-
-        <% } %>
-    </ul>
+    <h2>Create a New Fruit</h2>
+    <form action="/fruit" method="post">
+        <input type="text" name="name" placeholder="name of fruit"/>
+        <input type="text" name="color" placeholder="color of fruit"/>
+        <input type="checkbox" name="readyToEat"/>
+        <input type="submit" value="Create Fruit"/>
+    </form>
     
 </body>
 </html>
