@@ -5,12 +5,14 @@ const morgan = require("morgan") // importing the morgan library
 const fruits = require("./models/fruits") // return whatever fruits.js exports
 const PORT = process.env.PORT // GETTING THE PORT FROM OUR .ENV FILE
 const app = express() // express application
+const methodOverride = require("method-override") // import middleware for overriding for puts and deletes
 
 
 // MIDDLEWARE (Functions that run between the request and response)
 app.use(morgan("dev")) // SETS UP OUT LOGGING MIDDLEWARE
 app.use(express.static("public")) // treat the public folder as a static file server
 app.use(express.urlencoded({extended: false})) // middleware for parsing urlencoded
+app.use(methodOverride("_method")) // method will overridden when it sees a query string like ?_method="put"
 
 
 // ROUTES
@@ -30,6 +32,16 @@ app.get("/fruit/new", (req, res) => {
 // DESTROY - DELETE - DELETE A FRUIT
 
 // UPDATE - PUT - UPDATE A FRUIT
+app.put("/fruit/:id", (req, res) => {
+  // get the id from the url
+  const id = req.params.id
+  // make sure readyToEat is a boolean
+  req.body.readyToEat = req.body.readyToEat === "on" ? true : false
+  // swap the current version with the new version in the array
+  fruits[id] = req.body
+  // redirect the user back to the index page
+  res.redirect("/fruit")
+})
 
 // CREATE - POST - CREATE A FRUIT
 app.post("/fruit", (req, res) => {
@@ -44,6 +56,14 @@ app.post("/fruit", (req, res) => {
 
 
 // EDIT - GET - RENDER FORM TO UPDATE A FRUIT
+app.get("/fruit/:id/edit", (req, res) => {
+  // get the index of the specified fruit
+  const id = req.params.id
+  // get the fruit using the index
+  const fruit = fruits[id]
+  // render the template, pass the fruit and index
+  res.render("edit.ejs", {fruit, id})
+})
 
 
 // SHOW - GET - SHOWS ONE FRUIT - /fruit/:id
@@ -55,7 +75,7 @@ app.get("/fruit/:id", (req, res) => {
     // dynamically set a class
     const readyClass = fruit.readyToEat ? "green" : "red"
     // render a template with the fruit
-    res.render("show.ejs", {fruit, readyClass})
+    res.render("show.ejs", {fruit, readyClass, id})
 })
 
 
